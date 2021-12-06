@@ -1,4 +1,5 @@
 import 'package:bmi_calculator/widgets/bmi_slider.dart';
+import 'package:bmi_calculator/widgets/start_button.dart';
 import 'package:bmi_calculator/widgets/value_row.dart';
 import 'package:flutter/material.dart';
 
@@ -29,7 +30,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,21 +47,24 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Flexible(
-                flex: 2,
+              flex: 2,
               child: Center(
                 child: ValueRow('Enter your weight', 'Change metric'),
               ),
             ),
             Flexible(
-                flex: 6,
+              flex: 6,
               child: Center(
                 child: BmiSlider(0, 0, 100, Colors.grey),
-              )
+              ),
             ),
-
-
-
-
+            Expanded(
+              flex: 5,
+              child: Padding(
+                padding: EdgeInsets.all(50),
+                child: StartButton(),
+              ),
+            ),
           ],
         ),
       ),
