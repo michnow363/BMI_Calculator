@@ -43,13 +43,13 @@ class _HomePageState extends State<HomePage> {
             Flexible(
               flex: 2,
               child: Center(
-                child: ValueRow('Enter your height', 'Change metric'),
+                child: ValueRow('Enter your height', 'Change metric', 'cm'),
               ),
             ),
             Flexible(
               flex: 2,
               child: Center(
-                child: ValueRow('Enter your weight', 'Change metric'),
+                child: ValueRow('Enter your weight', 'Change metric', 'kg'),
               ),
             ),
             Flexible(
