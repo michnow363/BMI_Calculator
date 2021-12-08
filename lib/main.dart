@@ -2,6 +2,8 @@ import 'package:bmi_calculator/widgets/bmi_slider.dart';
 import 'package:bmi_calculator/widgets/start_button.dart';
 import 'package:bmi_calculator/widgets/value_row.dart';
 import 'package:flutter/material.dart';
+import 'blocs/value_rows_bloc.dart';
+import 'package:bmi_calculator/extensions.dart';
 
 void main() {
   runApp(MyApp());
@@ -43,13 +45,23 @@ class _HomePageState extends State<HomePage> {
             Flexible(
               flex: 2,
               child: Center(
-                child: ValueRow('Enter your height', 'Change metric', 'cm'),
+                child: ValueRow(
+                  'Enter your height',
+                  'Change metric',
+                  '${HeightUnit.values[0].name()}',
+                  ValueType.height,
+                ),
               ),
             ),
             Flexible(
               flex: 2,
               child: Center(
-                child: ValueRow('Enter your weight', 'Change metric', 'kg'),
+                child: ValueRow(
+                  'Enter your weight',
+                  'Change metric',
+                  '${WeightUnit.values[0].name()}',
+                  ValueType.weight,
+                ),
               ),
             ),
             Flexible(
