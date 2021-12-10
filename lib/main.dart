@@ -1,19 +1,22 @@
+import 'package:bmi_calculator/blocs/bmi_bloc.dart';
 import 'package:bmi_calculator/widgets/bmi_slider.dart';
 import 'package:bmi_calculator/widgets/start_button.dart';
 import 'package:bmi_calculator/widgets/value_row.dart';
 import 'package:flutter/material.dart';
-import 'blocs/value_rows_bloc.dart';
-import 'package:bmi_calculator/extensions.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'enums.dart';
 
 void main() {
-  runApp(MyApp());
+  BlocOverrides.runZoned(
+    () => runApp(MyApp()),
+  );
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'BMI Calculator',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -23,7 +26,7 @@ class MyApp extends StatelessWidget {
 }
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key, this.title}) : super(key: key);
+  HomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -32,54 +35,65 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final _bmiBloc = BmiBloc();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Flexible(
-              flex: 2,
-              child: Center(
-                child: ValueRow(
-                  'Enter your height',
-                  'Change metric',
-                  '${HeightUnit.values[0].name()}',
-                  ValueType.height,
+      body: BlocProvider(
+        create: (context) {
+          return _bmiBloc;
+        },
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Flexible(
+                flex: 2,
+                child: Center(
+                  child: ValueRow(
+                      'Enter your height',
+                      'Change metric',
+                      ValueType.height,
+                    ),
                 ),
               ),
-            ),
-            Flexible(
-              flex: 2,
-              child: Center(
-                child: ValueRow(
-                  'Enter your weight',
-                  'Change metric',
-                  '${WeightUnit.values[0].name()}',
-                  ValueType.weight,
+              Flexible(
+                flex: 2,
+                child: Center(
+                  child: ValueRow(
+                    'Enter your weight',
+                    'Change metric',
+                    ValueType.weight,
+                  ),
                 ),
               ),
-            ),
-            Flexible(
-              flex: 6,
-              child: Center(
-                child: BmiSlider(0, 0, 100, Colors.grey),
+              Flexible(
+                flex: 6,
+                child: Center(
+                  child: BmiSlider(0, 0, 100, Colors.grey),
+                ),
               ),
-            ),
-            Expanded(
-              flex: 5,
-              child: Padding(
-                padding: EdgeInsets.all(50),
-                child: StartButton(),
+              Expanded(
+                flex: 5,
+                child: Padding(
+                  padding: EdgeInsets.all(50),
+                  child: StartButton(),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _bmiBloc.close();
+    super.dispose();
   }
 }

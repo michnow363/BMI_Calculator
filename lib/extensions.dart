@@ -1,4 +1,4 @@
-import 'blocs/value_rows_bloc.dart';
+import 'enums.dart';
 
 extension HeightUnitExtension on HeightUnit {
   String name() {
