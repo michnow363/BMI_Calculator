@@ -11,3 +11,9 @@ class ChangeUnitEvent extends BmiEvent {
   final ValueType valueType;
   ChangeUnitEvent(this.valueType);
 }
+
+class ChangeValueEvent extends BmiEvent {
+  final ValueType valueType;
+  final double newValue;
+  ChangeValueEvent(this.valueType, this.newValue);
+}
