@@ -62,8 +62,8 @@ class ValueRowState extends State<ValueRow> {
                         child: TextFormField(
                           key: UniqueKey(),
                           initialValue: '${_valueType == ValueType.height
-                              ? state.heightValue.toStringAsFixed(2)
-                              : state.weightValue.toStringAsFixed(2)
+                              ? (state as ChangeUnitState).heightValue.toStringAsFixed(2)
+                              : (state as ChangeUnitState).weightValue.toStringAsFixed(2)
                             }',
                           onFieldSubmitted: (value) {
                             if (value.isNotEmpty) {
@@ -92,8 +92,8 @@ class ValueRowState extends State<ValueRow> {
                       child: Center(
                         child: Text(
                           _valueType == ValueType.height
-                              ? state.heightUnit
-                              : state.weightUnit,
+                              ? (state as ChangeUnitState).heightUnit
+                              : (state as ChangeUnitState).weightUnit,
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 20),
                         ),
@@ -121,11 +121,18 @@ class ValueRowState extends State<ValueRow> {
   }
 
   bool widgetNeedRebuild(BmiState previousState, BmiState state) {
-    bool rowValueChanged;
-    bool changedUnitWithValueZero;
-    rowValueChanged = _valueType == ValueType.height && (previousState.heightValue != state.heightValue)
-        || _valueType == ValueType.weight && (previousState.weightValue != state.weightValue);
-    changedUnitWithValueZero = state.heightValue == 0 || state.weightValue == 0;
-    return rowValueChanged || changedUnitWithValueZero;
+    if (state is ChangeUnitState) {
+      bool rowValueChanged;
+      bool changedUnitWithValueZero;
+      rowValueChanged = _valueType == ValueType.height &&
+          ((previousState as ChangeUnitState).heightValue != state.heightValue)
+          || _valueType == ValueType.weight &&
+              ((previousState as ChangeUnitState).weightValue != state.weightValue);
+      changedUnitWithValueZero =
+          state.heightValue == 0 || state.weightValue == 0;
+      return rowValueChanged || changedUnitWithValueZero;
+    } else {
+      return false;
+    }
   }
 }

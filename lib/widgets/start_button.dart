@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 class StartButton extends StatelessWidget {
+  StartButton(this.onPressed) : super();
+
+  var onPressed;
+
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -9,7 +13,7 @@ class StartButton extends StatelessWidget {
         width: double.infinity,
         height: double.infinity,
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: onPressed,
           child: Text('Show BMI'),
         ),
       ),

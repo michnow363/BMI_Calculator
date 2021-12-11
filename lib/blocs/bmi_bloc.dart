@@ -26,6 +26,7 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
             WeightUnit.values[0].name(),
             0,
             0,
+            0,
           ),
         ) {
     on<ChangeUnitEvent>(
@@ -37,14 +38,14 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
             heightUnit = unit.name();
             switch (unit) {
               case HeightUnit.m:
-                heightValue = convertFromFeetToM(heightValue);
+                heightValue = convertToM(heightValue);
                 break;
               case HeightUnit.feet:
-                heightValue = convertFromMToFeet(heightValue);
+                heightValue = convertToFeet(heightValue);
                 break;
             }
             emit(ChangeUnitState(
-                heightUnit, weightUnit, heightValue, weightValue));
+                heightUnit, weightUnit, heightValue, weightValue, 0));
             break;
           case ValueType.weight:
             _weightIndex = _nextWeightIndex(WeightUnit.values.length);
@@ -52,14 +53,14 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
             weightUnit = unit.name();
             switch (unit) {
               case WeightUnit.kg:
-                weightValue = convertFromLbToKg(weightValue);
+                weightValue = convertToKg(weightValue);
                 break;
               case WeightUnit.lb:
-                weightValue = convertFromKgToLb(weightValue);
+                weightValue = convertToLb(weightValue);
                 break;
             }
             emit(ChangeUnitState(
-                heightUnit, weightUnit, heightValue, weightValue));
+                heightUnit, weightUnit, heightValue, weightValue, 0));
             break;
         }
       },
@@ -70,16 +71,27 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
           case ValueType.height:
             heightValue = event.newValue;
             emit(ChangeUnitState(
-                heightUnit, weightUnit, heightValue, weightValue));
+                heightUnit, weightUnit, heightValue, weightValue, 0));
             break;
           case ValueType.weight:
             weightValue = event.newValue;
             emit(ChangeUnitState(
-                heightUnit, weightUnit, heightValue, weightValue));
+                heightUnit, weightUnit, heightValue, weightValue, 0));
             break;
         }
       },
     );
+    on<CalculateBmiEvent>((event, emit) {
+      final double heightValueInMetric = convertToM(heightValue);
+      final double weightValueInMetric = convertToKg(weightValue);
+      emit(ChangeUnitState(
+        heightUnit,
+        weightUnit,
+        heightValue,
+        weightValue,
+        calculateBmi(heightValueInMetric, weightValueInMetric),
+      ));
+    });
   }
 
   int _nextHeightIndex(int numberOfValues) {
@@ -92,19 +104,34 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
     return _weightIndex % numberOfValues;
   }
 
-  double convertFromFeetToM(double valueFeet) {
-    return valueFeet / Consts.feetInMeter;
+  double convertToM(double value) {
+    return HeightUnit.values[_heightIndex] == HeightUnit.feet
+        ? value / Consts.feetInMeter
+        : value;
   }
 
-  double convertFromLbToKg(double valueLb) {
-    return valueLb / Consts.lbInKg;
+  double convertToFeet(double value) {
+    return HeightUnit.values[_heightIndex] == HeightUnit.m
+        ? value * Consts.feetInMeter
+        : value;
   }
 
-  double convertFromMToFeet(double valueM) {
-    return valueM * Consts.feetInMeter;
+  double convertToKg(double value) {
+    return WeightUnit.values[_weightIndex] == WeightUnit.lb
+        ? value / Consts.lbInKg
+        : value;
   }
 
-  double convertFromKgToLb(double valueKg) {
-    return valueKg * Consts.lbInKg;
+  double convertToLb(double value) {
+    return WeightUnit.values[_weightIndex] == WeightUnit.lb
+        ? value * Consts.lbInKg
+        : value;
+  }
+
+  double calculateBmi(double height, double weight) {
+    if (height <= 0 || weight <= 0) {
+      return -1;
+    }
+    return weight / height / height;
   }
 }

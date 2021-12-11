@@ -1,36 +1,31 @@
 import 'package:equatable/equatable.dart';
 
 abstract class BmiState extends Equatable {
-  BmiState(
+  BmiState(): super();
+  @override
+  List<Object?> get props => [];
+}
+
+class ChangeUnitState extends BmiState {
+  @override
+  List<Object?> get props => [
     this.heightUnit,
     this.weightUnit,
     this.heightValue,
     this.weightValue,
-  );
+    this.bmiValue,
+  ];
 
-  @override
-  List<Object?> get props => [
-        this.heightUnit,
-        this.weightUnit,
-        this.heightValue,
-        this.weightValue,
-      ];
   final String heightUnit;
   final String weightUnit;
   final double heightValue;
   final double weightValue;
-}
-
-class ChangeUnitState extends BmiState {
+  final double bmiValue;
   ChangeUnitState(
-    String heightUnit,
-    String weightUnit,
-    double heightValue,
-    double weightValue,
-  ) : super(
-          heightUnit,
-          weightUnit,
-          heightValue,
-          weightValue,
-        );
+      this.heightUnit,
+      this.weightUnit,
+      this.heightValue,
+      this.weightValue,
+      this.bmiValue,
+  ) : super();
 }

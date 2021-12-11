@@ -17,3 +17,5 @@ class ChangeValueEvent extends BmiEvent {
   final double newValue;
   ChangeValueEvent(this.valueType, this.newValue);
 }
+
+class CalculateBmiEvent extends BmiEvent {}
