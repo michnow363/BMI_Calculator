@@ -1,5 +1,6 @@
 import 'package:bmi_calculator/blocs/bmi_bloc.dart';
 import 'package:bmi_calculator/blocs/bmi_event.dart';
+import 'package:bmi_calculator/extensions.dart';
 import 'package:bmi_calculator/widgets/bmi_slider.dart';
 import 'package:bmi_calculator/widgets/start_button.dart';
 import 'package:bmi_calculator/widgets/value_row.dart';
@@ -38,7 +39,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _bmiBloc = BmiBloc();
-  double bmiValue = 0;
+  double _bmiValue = 0;
+  String _bmiLabel = '';
+  Color _color = BmiLevel.empty.color();
 
   @override
   Widget build(BuildContext context) {
@@ -88,10 +91,11 @@ class _HomePageState extends State<HomePage> {
                     flex: 6,
                     child: Center(
                       child: BmiSlider(
-                        bmiValue: bmiValue,
+                        bmiValue: _bmiValue,
                         min: 0,
-                        max: 100,
-                        color: Colors.grey,
+                        max: 60,
+                        color: _color,
+                        bmiLabel: _bmiLabel,
                       ),
                     ),
                   );
@@ -128,10 +132,14 @@ class _HomePageState extends State<HomePage> {
 
   void getBmiValue(BmiState state) {
     if (state is InitialState) {
-      bmiValue = state.bmiValue;
+      _bmiValue = state.bmiValue;
+      _bmiLabel = state.bmiLevelLabel;
+      _color = state.color;
     }
     if (state is CalculatedBmiState) {
-      bmiValue = state.bmiValue;
+      _bmiValue = state.bmiValue;
+      _bmiLabel = state.bmiLevelLabel;
+      _color = state.color;
     }
   }
 

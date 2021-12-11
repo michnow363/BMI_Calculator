@@ -12,3 +12,15 @@ enum WeightUnit {
   kg,
   lb,
 }
+
+enum BmiLevel {
+  starvation,
+  emaciation,
+  underweight,
+  correct,
+  overweight,
+  obesityI,
+  obesityII,
+  obesityIII,
+  empty
+}

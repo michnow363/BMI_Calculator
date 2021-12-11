@@ -1,5 +1,6 @@
 import 'package:bmi_calculator/blocs/bmi_state.dart';
 import 'package:bmi_calculator/consts.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bmi_calculator/extensions.dart';
 import '../enums.dart';
@@ -24,11 +25,13 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
         _bmiValue = 0,
         super(
           InitialState(
-            HeightUnit.values[0].name(),
-            WeightUnit.values[0].name(),
-            0,
-            0,
-            0,
+            heightUnit: HeightUnit.values[0].name(),
+            weightUnit: WeightUnit.values[0].name(),
+            heightValue: 0,
+            weightValue: 0,
+            bmiValue: 0,
+            color: BmiLevel.empty.color(),
+            bmiLevelLabel: BmiLevel.empty.label(),
           ),
         ) {
     on<ChangeUnitEvent>(
@@ -64,10 +67,10 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
             break;
         }
         emit(ChangedUnitState(
-          _heightUnit,
-          _weightUnit,
-          _heightValue,
-          _weightValue,
+          heightUnit: _heightUnit,
+          weightUnit: _weightUnit,
+          heightValue: _heightValue,
+          weightValue: _weightValue,
         ));
       },
     );
@@ -76,24 +79,31 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
         switch (event.valueType) {
           case ValueType.height:
             _heightValue = event.newValue;
-            emit(ChangedUnitState(
-                _heightUnit, _weightUnit, _heightValue, _weightValue));
             break;
           case ValueType.weight:
             _weightValue = event.newValue;
-            emit(ChangedUnitState(
-                _heightUnit, _weightUnit, _heightValue, _weightValue));
             break;
         }
+        emit(ChangedUnitState(
+          heightUnit: _heightUnit,
+          weightUnit: _weightUnit,
+          heightValue: _heightValue,
+          weightValue: _weightValue,
+        ));
       },
     );
     on<CalculateBmiEvent>((event, emit) {
       final double heightValueInMetric = _convertToM(_heightValue);
       final double weightValueInMetric = _convertToKg(_weightValue);
-      final newBmiValue = _calculateBmi(heightValueInMetric, weightValueInMetric);
+      final newBmiValue =
+          _calculateBmi(heightValueInMetric, weightValueInMetric);
       if (newBmiValue != _bmiValue && newBmiValue != -1) {
         _bmiValue = newBmiValue;
-        emit(CalculatedBmiState(_bmiValue));
+        emit(CalculatedBmiState(
+          bmiValue: _bmiValue,
+          color: _getBmiColor(),
+          bmiLevelLabel: _getBmiLabel(),
+        ));
       }
     });
   }
@@ -137,5 +147,53 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
       return -1;
     }
     return weight / height / height;
+  }
+
+  String _getBmiLabel() {
+    final String bmiLevelLabel;
+    if(_bmiValue <= 0) {
+      bmiLevelLabel = BmiLevel.empty.label();
+    } else if (_bmiValue < 16) {
+      bmiLevelLabel = BmiLevel.starvation.label();
+    } else if (_bmiValue < 17) {
+      bmiLevelLabel = BmiLevel.emaciation.label();
+    } else if (_bmiValue < 18.5) {
+      bmiLevelLabel = BmiLevel.underweight.label();
+    } else if (_bmiValue < 25) {
+      bmiLevelLabel = BmiLevel.correct.label();
+    } else if (_bmiValue < 30) {
+      bmiLevelLabel = BmiLevel.overweight.label();
+    } else if (_bmiValue < 35) {
+      bmiLevelLabel = BmiLevel.obesityI.label();
+    } else if (_bmiValue < 40) {
+      bmiLevelLabel = BmiLevel.obesityII.label();
+    } else {
+      bmiLevelLabel = BmiLevel.obesityIII.label();
+    }
+    return bmiLevelLabel;
+  }
+
+  Color _getBmiColor() {
+    final Color color;
+    if(_bmiValue <= 0) {
+      color = BmiLevel.empty.color();
+    } else if (_bmiValue < 16) {
+      color = BmiLevel.starvation.color();
+    } else if (_bmiValue < 17) {
+      color = BmiLevel.emaciation.color();
+    } else if (_bmiValue < 18.5) {
+      color = BmiLevel.underweight.color();
+    } else if (_bmiValue < 25) {
+      color = BmiLevel.correct.color();
+    } else if (_bmiValue < 30) {
+      color = BmiLevel.overweight.color();
+    } else if (_bmiValue < 35) {
+      color = BmiLevel.obesityI.color();
+    } else if (_bmiValue < 40) {
+      color = BmiLevel.obesityII.color();
+    } else {
+      color = BmiLevel.obesityIII.color();
+    }
+    return color;
   }
 }

@@ -69,7 +69,7 @@ class ValueRowState extends State<ValueRow> {
                         padding: EdgeInsets.only(right: 20),
                         child: TextFormField(
                           key: UniqueKey(),
-                          initialValue: '${value.toStringAsFixed(2)}',
+                          initialValue: value > 0 ? '${value.toStringAsFixed(2)}' : '',
                           onFieldSubmitted: (value) {
                             if (value.isNotEmpty) {
                               final valueDb = double.parse(value);

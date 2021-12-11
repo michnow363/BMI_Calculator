@@ -5,12 +5,19 @@ class BmiSlider extends StatelessWidget {
   final double _min;
   final double _max;
   final Color _color;
+  final String _bmiLabel;
 
-  BmiSlider({required double bmiValue, double min = 0, double max = 100, required Color color})
+  BmiSlider(
+      {required double bmiValue,
+      double min = 0,
+      double max = 60,
+      required Color color,
+      required String bmiLabel})
       : _bmiValue = bmiValue,
         _min = min,
         _max = max,
-        _color = color;
+        _color = color,
+        _bmiLabel = bmiLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -20,20 +27,22 @@ class BmiSlider extends StatelessWidget {
           flex: 1,
           child: Center(
             child: Text(
-              'BMI: ${_bmiValue.toStringAsFixed(2)}',
+              _bmiValue == 0 ? '' : 'BMI = ${_bmiValue.toStringAsFixed(2)}',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 30, color: _color),
             ),
           ),
         ),
         Flexible(
-          flex: 2,
+          flex: 1,
           child: Center(
             child: Slider(
               min: _min,
               max: _max,
-              value: _bmiValue,
+              value: _bmiValue > _max ? _max : _bmiValue,
               onChanged: (newValue) {},
+              inactiveColor: _color,
+              activeColor: _color,
             ),
           ),
         ),
@@ -41,7 +50,7 @@ class BmiSlider extends StatelessWidget {
           flex: 1,
           child: Center(
             child: Text(
-              'Underweight',
+              _bmiLabel,
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 30, color: _color),
             ),
