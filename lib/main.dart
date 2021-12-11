@@ -58,9 +58,9 @@ class _HomePageState extends State<HomePage> {
                 flex: 2,
                 child: Center(
                   child: ValueRow(
-                    'Enter your height',
-                    'Change metric',
-                    ValueType.height,
+                    textBoxTitle: 'Enter your height',
+                    buttonTooltip: 'Change metric',
+                    valueType: ValueType.height,
                   ),
                 ),
               ),
@@ -68,9 +68,9 @@ class _HomePageState extends State<HomePage> {
                 flex: 2,
                 child: Center(
                   child: ValueRow(
-                    'Enter your weight',
-                    'Change metric',
-                    ValueType.weight,
+                    textBoxTitle: 'Enter your weight',
+                    buttonTooltip: 'Change metric',
+                    valueType: ValueType.weight,
                   ),
                 ),
               ),
@@ -87,8 +87,12 @@ class _HomePageState extends State<HomePage> {
                   return Flexible(
                     flex: 6,
                     child: Center(
-                      child: BmiSlider(bmiValue,
-                          0, 100, Colors.grey),
+                      child: BmiSlider(
+                        bmiValue: bmiValue,
+                        min: 0,
+                        max: 100,
+                        color: Colors.grey,
+                      ),
                     ),
                   );
                 },
@@ -99,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                   padding: EdgeInsets.all(50),
                   child: Builder(builder: (context) {
                     return StartButton(
-                      () {
+                      onPressed: () {
                         BlocProvider.of<BmiBloc>(context)
                             .add(CalculateBmiEvent());
                       },

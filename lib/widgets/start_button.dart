@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 class StartButton extends StatelessWidget {
-  StartButton(this.onPressed) : super();
+  StartButton({required Function() onPressed})
+      : _onPressed = onPressed,
+        super();
 
-  var onPressed;
+  final Function() _onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +15,7 @@ class StartButton extends StatelessWidget {
         width: double.infinity,
         height: double.infinity,
         child: ElevatedButton(
-          onPressed: onPressed,
+          onPressed: _onPressed,
           child: Text('Show BMI'),
         ),
       ),

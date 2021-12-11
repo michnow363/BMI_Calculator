@@ -6,15 +6,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../enums.dart';
 
 class ValueRow extends StatefulWidget {
-  final ValueType _valueType;
   final String _textBoxTitle;
   final String _buttonTooltip;
+  final ValueType _valueType;
 
-  ValueRow(
-    this._textBoxTitle,
-    this._buttonTooltip,
-    this._valueType,
-  );
+  ValueRow({
+    required String textBoxTitle,
+    required String buttonTooltip,
+    required ValueType valueType,
+  })  : _textBoxTitle = textBoxTitle,
+        _buttonTooltip = buttonTooltip,
+        _valueType = valueType;
 
   @override
   State<StatefulWidget> createState() {
@@ -38,7 +40,7 @@ class ValueRowState extends State<ValueRow> {
     this._textBoxTitle,
     this._buttonTooltip,
     this._valueType,
-  ): _valueEmpty = true;
+  ) : _valueEmpty = true;
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +75,7 @@ class ValueRowState extends State<ValueRow> {
                               final valueDb = double.parse(value);
                               _valueEmpty = valueDb > 0 ? false : true;
                               BlocProvider.of<BmiBloc>(context)
-                                .add(ChangeValueEvent(_valueType, valueDb));
+                                  .add(ChangeValueEvent(_valueType, valueDb));
                               value = valueDb.toStringAsFixed(2);
                             } else {
                               _valueEmpty = true;
@@ -122,7 +124,7 @@ class ValueRowState extends State<ValueRow> {
   }
 
   bool widgetNeedRebuilding(BmiState previousState, BmiState state) {
-    if (state is InitialState || state is ChangeUnitState) {
+    if (state is InitialState || state is ChangedUnitState) {
       return true;
     } else {
       return false;
@@ -131,17 +133,15 @@ class ValueRowState extends State<ValueRow> {
 
   void getValues(BmiState state) {
     if (state is InitialState) {
-      unit = _valueType == ValueType.height
-          ? state.heightUnit
-          : state.weightUnit;
+      unit =
+          _valueType == ValueType.height ? state.heightUnit : state.weightUnit;
       value = _valueType == ValueType.height
           ? state.heightValue
           : state.weightValue;
     }
-    if (state is ChangeUnitState) {
-      unit = _valueType == ValueType.height
-          ? state.heightUnit
-          : state.weightUnit;
+    if (state is ChangedUnitState) {
+      unit =
+          _valueType == ValueType.height ? state.heightUnit : state.weightUnit;
       value = _valueType == ValueType.height
           ? state.heightValue
           : state.weightValue;
