@@ -124,7 +124,7 @@ class ValueRowState extends State<ValueRow> {
   }
 
   bool widgetNeedRebuilding(BmiState previousState, BmiState state) {
-    if (state is InitialState || state is ChangedUnitState) {
+    if (state is InitialState || state is ChangedValueState) {
       return true;
     } else {
       return false;
@@ -139,7 +139,7 @@ class ValueRowState extends State<ValueRow> {
           ? state.heightValue
           : state.weightValue;
     }
-    if (state is ChangedUnitState) {
+    if (state is ChangedValueState) {
       unit =
           _valueType == ValueType.height ? state.heightUnit : state.weightUnit;
       value = _valueType == ValueType.height

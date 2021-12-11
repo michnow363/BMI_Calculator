@@ -39,7 +39,7 @@ class InitialState extends BmiState {
       : super();
 }
 
-class ChangedUnitState extends BmiState {
+class ChangedValueState extends BmiState {
   @override
   List<Object?> get props => [
         this.heightUnit,
@@ -53,7 +53,7 @@ class ChangedUnitState extends BmiState {
   final double heightValue;
   final double weightValue;
 
-  ChangedUnitState({
+  ChangedValueState({
     required this.heightUnit,
     required this.weightUnit,
     required this.heightValue,

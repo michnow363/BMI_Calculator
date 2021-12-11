@@ -66,7 +66,7 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
             _weightUnit = unit.name();
             break;
         }
-        emit(ChangedUnitState(
+        emit(ChangedValueState(
           heightUnit: _heightUnit,
           weightUnit: _weightUnit,
           heightValue: _heightValue,
@@ -84,7 +84,7 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
             _weightValue = event.newValue;
             break;
         }
-        emit(ChangedUnitState(
+        emit(ChangedValueState(
           heightUnit: _heightUnit,
           weightUnit: _weightUnit,
           heightValue: _heightValue,
