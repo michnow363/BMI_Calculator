@@ -6,7 +6,7 @@ abstract class BmiState extends Equatable {
   List<Object?> get props => [];
 }
 
-class ChangeUnitState extends BmiState {
+class InitialState extends BmiState {
   @override
   List<Object?> get props => [
     this.heightUnit,
@@ -21,11 +21,44 @@ class ChangeUnitState extends BmiState {
   final double heightValue;
   final double weightValue;
   final double bmiValue;
-  ChangeUnitState(
+  InitialState(
       this.heightUnit,
       this.weightUnit,
       this.heightValue,
       this.weightValue,
       this.bmiValue,
-  ) : super();
+      ) : super();
+}
+
+class ChangeUnitState extends BmiState {
+  @override
+  List<Object?> get props => [
+    this.heightUnit,
+    this.weightUnit,
+    this.heightValue,
+    this.weightValue,
+  ];
+
+  final String heightUnit;
+  final String weightUnit;
+  final double heightValue;
+  final double weightValue;
+  ChangeUnitState(
+      this.heightUnit,
+      this.weightUnit,
+      this.heightValue,
+      this.weightValue,
+      ) : super();
+}
+
+class CalculatedBmiState extends BmiState {
+  @override
+  List<Object?> get props => [
+    this.bmiValue,
+  ];
+
+  final double bmiValue;
+  CalculatedBmiState(
+      this.bmiValue,
+      ) : super();
 }

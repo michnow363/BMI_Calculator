@@ -21,7 +21,7 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
         heightUnit = HeightUnit.values[0].name(),
         weightUnit = WeightUnit.values[0].name(),
         super(
-          ChangeUnitState(
+          InitialState(
             HeightUnit.values[0].name(),
             WeightUnit.values[0].name(),
             0,
@@ -33,34 +33,44 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
       (event, emit) {
         switch (event.valueType) {
           case ValueType.height:
+            final unitBeforeChange = HeightUnit.values[_heightIndex];
+            switch (unitBeforeChange) {
+              case HeightUnit.m:
+                heightValue = convertToFeet(heightValue);
+                break;
+              case HeightUnit.feet:
+                heightValue = convertToM(heightValue);
+                break;
+            }
             _heightIndex = _nextHeightIndex(HeightUnit.values.length);
             final unit = HeightUnit.values[_heightIndex];
             heightUnit = unit.name();
-            switch (unit) {
-              case HeightUnit.m:
-                heightValue = convertToM(heightValue);
-                break;
-              case HeightUnit.feet:
-                heightValue = convertToFeet(heightValue);
-                break;
-            }
             emit(ChangeUnitState(
-                heightUnit, weightUnit, heightValue, weightValue, 0));
+              heightUnit,
+              weightUnit,
+              heightValue,
+              weightValue,
+            ));
             break;
           case ValueType.weight:
+            final unitBeforeChange = WeightUnit.values[_weightIndex];
+            switch (unitBeforeChange) {
+              case WeightUnit.kg:
+                weightValue = convertToLb(weightValue);
+                break;
+              case WeightUnit.lb:
+                weightValue = convertToKg(weightValue);
+                break;
+            }
             _weightIndex = _nextWeightIndex(WeightUnit.values.length);
             final unit = WeightUnit.values[_weightIndex];
             weightUnit = unit.name();
-            switch (unit) {
-              case WeightUnit.kg:
-                weightValue = convertToKg(weightValue);
-                break;
-              case WeightUnit.lb:
-                weightValue = convertToLb(weightValue);
-                break;
-            }
             emit(ChangeUnitState(
-                heightUnit, weightUnit, heightValue, weightValue, 0));
+              heightUnit,
+              weightUnit,
+              heightValue,
+              weightValue,
+            ));
             break;
         }
       },
@@ -71,12 +81,12 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
           case ValueType.height:
             heightValue = event.newValue;
             emit(ChangeUnitState(
-                heightUnit, weightUnit, heightValue, weightValue, 0));
+                heightUnit, weightUnit, heightValue, weightValue));
             break;
           case ValueType.weight:
             weightValue = event.newValue;
             emit(ChangeUnitState(
-                heightUnit, weightUnit, heightValue, weightValue, 0));
+                heightUnit, weightUnit, heightValue, weightValue));
             break;
         }
       },
@@ -84,13 +94,8 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
     on<CalculateBmiEvent>((event, emit) {
       final double heightValueInMetric = convertToM(heightValue);
       final double weightValueInMetric = convertToKg(weightValue);
-      emit(ChangeUnitState(
-        heightUnit,
-        weightUnit,
-        heightValue,
-        weightValue,
-        calculateBmi(heightValueInMetric, weightValueInMetric),
-      ));
+      emit(CalculatedBmiState(
+          calculateBmi(heightValueInMetric, weightValueInMetric)));
     });
   }
 
@@ -123,7 +128,7 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
   }
 
   double convertToLb(double value) {
-    return WeightUnit.values[_weightIndex] == WeightUnit.lb
+    return WeightUnit.values[_weightIndex] == WeightUnit.kg
         ? value * Consts.lbInKg
         : value;
   }

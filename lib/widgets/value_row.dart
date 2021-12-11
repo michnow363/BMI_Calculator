@@ -30,6 +30,8 @@ class ValueRowState extends State<ValueRow> {
   final ValueType _valueType;
   final String _textBoxTitle;
   final String _buttonTooltip;
+  String unit = "";
+  double value = 0;
   bool _valueEmpty;
 
   ValueRowState(
@@ -48,7 +50,11 @@ class ValueRowState extends State<ValueRow> {
         children: <Widget>[
           BlocBuilder<BmiBloc, BmiState>(
             buildWhen: (previousState, state) {
-              return widgetNeedRebuild(previousState, state);
+              final needRebuilding = widgetNeedRebuilding(previousState, state);
+              if (needRebuilding) {
+                getValues(state);
+              }
+              return needRebuilding;
             },
             builder: (context, state) {
               return Flexible(
@@ -61,10 +67,7 @@ class ValueRowState extends State<ValueRow> {
                         padding: EdgeInsets.only(right: 20),
                         child: TextFormField(
                           key: UniqueKey(),
-                          initialValue: '${_valueType == ValueType.height
-                              ? (state as ChangeUnitState).heightValue.toStringAsFixed(2)
-                              : (state as ChangeUnitState).weightValue.toStringAsFixed(2)
-                            }',
+                          initialValue: '${value.toStringAsFixed(2)}',
                           onFieldSubmitted: (value) {
                             if (value.isNotEmpty) {
                               final valueDb = double.parse(value);
@@ -91,9 +94,7 @@ class ValueRowState extends State<ValueRow> {
                       flex: 1,
                       child: Center(
                         child: Text(
-                          _valueType == ValueType.height
-                              ? (state as ChangeUnitState).heightUnit
-                              : (state as ChangeUnitState).weightUnit,
+                          unit,
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 20),
                         ),
@@ -120,19 +121,30 @@ class ValueRowState extends State<ValueRow> {
     );
   }
 
-  bool widgetNeedRebuild(BmiState previousState, BmiState state) {
-    if (state is ChangeUnitState) {
-      bool rowValueChanged;
-      bool changedUnitWithValueZero;
-      rowValueChanged = _valueType == ValueType.height &&
-          ((previousState as ChangeUnitState).heightValue != state.heightValue)
-          || _valueType == ValueType.weight &&
-              ((previousState as ChangeUnitState).weightValue != state.weightValue);
-      changedUnitWithValueZero =
-          state.heightValue == 0 || state.weightValue == 0;
-      return rowValueChanged || changedUnitWithValueZero;
+  bool widgetNeedRebuilding(BmiState previousState, BmiState state) {
+    if (state is InitialState || state is ChangeUnitState) {
+      return true;
     } else {
       return false;
+    }
+  }
+
+  void getValues(BmiState state) {
+    if (state is InitialState) {
+      unit = _valueType == ValueType.height
+          ? state.heightUnit
+          : state.weightUnit;
+      value = _valueType == ValueType.height
+          ? state.heightValue
+          : state.weightValue;
+    }
+    if (state is ChangeUnitState) {
+      unit = _valueType == ValueType.height
+          ? state.heightUnit
+          : state.weightUnit;
+      value = _valueType == ValueType.height
+          ? state.heightValue
+          : state.weightValue;
     }
   }
 }

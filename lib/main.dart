@@ -38,6 +38,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _bmiBloc = BmiBloc();
+  double bmiValue = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -75,15 +76,19 @@ class _HomePageState extends State<HomePage> {
               ),
               BlocBuilder<BmiBloc, BmiState>(
                 buildWhen: (previousState, state) {
-                  return (state as ChangeUnitState).bmiValue !=
-                      (previousState as ChangeUnitState).bmiValue;
+                  final needRebuilding =
+                      widgetNeedRebuilding(previousState, state);
+                  if (needRebuilding) {
+                    getBmiValue(state);
+                  }
+                  return needRebuilding;
                 },
                 builder: (context, state) {
                   return Flexible(
                     flex: 6,
                     child: Center(
-                      child: BmiSlider((state as ChangeUnitState).bmiValue, 0,
-                          100, Colors.grey),
+                      child: BmiSlider(bmiValue,
+                          0, 100, Colors.grey),
                     ),
                   );
                 },
@@ -107,6 +112,23 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  bool widgetNeedRebuilding(BmiState previousState, BmiState state) {
+    if (state is InitialState || state is CalculatedBmiState) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  void getBmiValue(BmiState state) {
+    if (state is InitialState) {
+      bmiValue = state.bmiValue;
+    }
+    if (state is CalculatedBmiState) {
+      bmiValue = state.bmiValue;
+    }
   }
 
   @override
