@@ -5,6 +5,7 @@ import 'package:bmi_calculator/widgets/bmi_slider.dart';
 import 'package:bmi_calculator/widgets/start_button.dart';
 import 'package:bmi_calculator/widgets/value_row.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'blocs/bmi_state.dart';
 import 'enums.dart';
@@ -18,6 +19,9 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     return MaterialApp(
       title: 'BMI Calculator',
       theme: ThemeData(
