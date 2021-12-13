@@ -16,7 +16,10 @@ class StartButton extends StatelessWidget {
         height: double.infinity,
         child: ElevatedButton(
           onPressed: _onPressed,
-          child: Text('Show BMI'),
+          child: Text(
+            'Show BMI',
+            style: TextStyle(fontSize: 20),
+          ),
         ),
       ),
     );

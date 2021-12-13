@@ -39,9 +39,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _bmiBloc = BmiBloc();
-  double _bmiValue = 0;
-  String _bmiLabel = '';
-  Color _color = BmiLevel.empty.color();
 
   @override
   Widget build(BuildContext context) {
@@ -81,9 +78,6 @@ class _HomePageState extends State<HomePage> {
                 buildWhen: (previousState, state) {
                   final needRebuilding =
                       widgetNeedRebuilding(previousState, state);
-                  if (needRebuilding) {
-                    getBmiValue(state);
-                  }
                   return needRebuilding;
                 },
                 builder: (context, state) {
@@ -91,11 +85,11 @@ class _HomePageState extends State<HomePage> {
                     flex: 6,
                     child: Center(
                       child: BmiSlider(
-                        bmiValue: _bmiValue,
+                        bmiValue: getBmiValue(state),
                         min: 0,
                         max: 60,
-                        color: _color,
-                        bmiLabel: _bmiLabel,
+                        color: getBmiColor(state),
+                        bmiLabel: getBmiLevelLabel(state),
                       ),
                     ),
                   );
@@ -123,24 +117,44 @@ class _HomePageState extends State<HomePage> {
   }
 
   bool widgetNeedRebuilding(BmiState previousState, BmiState state) {
-    if (state is InitialState || state is CalculatedBmiState) {
+    if (state is CalculatedBmiState) {
       return true;
     } else {
       return false;
     }
   }
 
-  void getBmiValue(BmiState state) {
+  double getBmiValue(BmiState state) {
+    double bmiValue = 0;
     if (state is InitialState) {
-      _bmiValue = state.bmiValue;
-      _bmiLabel = state.bmiLevelLabel;
-      _color = state.color;
+      bmiValue = state.bmiValue;
     }
     if (state is CalculatedBmiState) {
-      _bmiValue = state.bmiValue;
-      _bmiLabel = state.bmiLevelLabel;
-      _color = state.color;
+      bmiValue = state.bmiValue;
     }
+    return bmiValue;
+  }
+
+  String getBmiLevelLabel(BmiState state) {
+    String levelLabel = '';
+    if (state is InitialState) {
+      levelLabel = state.bmiLevelLabel;
+    }
+    if (state is CalculatedBmiState) {
+      levelLabel = state.bmiLevelLabel;
+    }
+    return levelLabel;
+  }
+
+  Color getBmiColor(BmiState state) {
+    Color color = BmiLevel.empty.color();
+    if (state is InitialState) {
+      color = state.color;
+    }
+    if (state is CalculatedBmiState) {
+      color = state.color;
+    }
+    return color;
   }
 
   @override

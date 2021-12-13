@@ -32,15 +32,13 @@ class ValueRowState extends State<ValueRow> {
   final ValueType _valueType;
   final String _textBoxTitle;
   final String _buttonTooltip;
-  String unit = "";
-  double value = 0;
   bool _valueEmpty;
 
   ValueRowState(
     this._textBoxTitle,
     this._buttonTooltip,
     this._valueType,
-  ) : _valueEmpty = true;
+  )   : _valueEmpty = true;
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +51,6 @@ class ValueRowState extends State<ValueRow> {
           BlocBuilder<BmiBloc, BmiState>(
             buildWhen: (previousState, state) {
               final needRebuilding = widgetNeedRebuilding(previousState, state);
-              if (needRebuilding) {
-                getValues(state);
-              }
               return needRebuilding;
             },
             builder: (context, state) {
@@ -69,7 +64,7 @@ class ValueRowState extends State<ValueRow> {
                         padding: EdgeInsets.only(right: 20),
                         child: TextFormField(
                           key: UniqueKey(),
-                          initialValue: value > 0 ? '${value.toStringAsFixed(2)}' : '',
+                          initialValue: getValue(state),
                           onFieldSubmitted: (value) {
                             if (value.isNotEmpty) {
                               final valueDb = double.parse(value);
@@ -96,7 +91,7 @@ class ValueRowState extends State<ValueRow> {
                       flex: 1,
                       child: Center(
                         child: Text(
-                          unit,
+                          getUnit(state),
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 20),
                         ),
@@ -124,27 +119,38 @@ class ValueRowState extends State<ValueRow> {
   }
 
   bool widgetNeedRebuilding(BmiState previousState, BmiState state) {
-    if (state is InitialState || state is ChangedValueState) {
+    if (state is ChangedValueState) {
       return true;
     } else {
       return false;
     }
   }
-
-  void getValues(BmiState state) {
+  String getUnit(BmiState state) {
+    String unit = '';
     if (state is InitialState) {
-      unit =
-          _valueType == ValueType.height ? state.heightUnit : state.weightUnit;
+      unit = _valueType == ValueType.height
+          ? state.heightUnit
+          : state.weightUnit;
+    }
+    if (state is ChangedValueState) {
+      unit = _valueType == ValueType.height
+          ? state.heightUnit
+          : state.weightUnit;
+    }
+    return unit;
+  }
+  String getValue(BmiState state) {
+    double value = 0;
+    if (state is InitialState) {
       value = _valueType == ValueType.height
           ? state.heightValue
           : state.weightValue;
     }
     if (state is ChangedValueState) {
-      unit =
-          _valueType == ValueType.height ? state.heightUnit : state.weightUnit;
       value = _valueType == ValueType.height
           ? state.heightValue
           : state.weightValue;
     }
+    return value > 0 ? '${value.toStringAsFixed(2)}' : '';
   }
 }
