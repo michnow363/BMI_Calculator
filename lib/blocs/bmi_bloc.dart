@@ -7,22 +7,18 @@ import 'bmi_state.dart';
 import 'bmi_calculator.dart';
 
 class BmiBloc extends Bloc<BmiEvent, BmiState> {
-  int _heightIndex;
-  int _weightIndex;
+  HeightUnit _heightUnit;
+  WeightUnit _weightUnit;
   double _heightValue;
   double _weightValue;
-  String _heightUnit;
-  String _weightUnit;
   double _bmiValue;
   List<BmiCalculator> _bmiCalculators;
 
   BmiBloc()
-      : _heightIndex = 0,
-        _weightIndex = 0,
+      : _heightUnit = HeightUnit.values[0],
+        _weightUnit = WeightUnit.values[0],
         _heightValue = 0.0,
         _weightValue = 0.0,
-        _heightUnit = HeightUnit.values[0].name,
-        _weightUnit = WeightUnit.values[0].name,
         _bmiValue = 0,
         _bmiCalculators = [MetricCalculator(), ImperialCalculator()],
         super(
@@ -43,25 +39,23 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
   void changeAndEmitUnit(event, emit) {
     switch (event.valueType) {
       case ValueType.height:
-        final unitBeforeChange = HeightUnit.values[_heightIndex];
-        _heightIndex = _nextHeightIndex(HeightUnit.values.length);
-        final unit = HeightUnit.values[_heightIndex];
-        _heightValue = _bmiCalculators[unit.unitSystem().index]
+        final unitBeforeChange = HeightUnit.values[_heightUnit.index];
+        final heightIndex = _nextHeightIndex();
+        _heightUnit = HeightUnit.values[heightIndex];
+        _heightValue = _bmiCalculators[_heightUnit.unitSystem().index]
             .convertHeight(_heightValue, unitBeforeChange);
-        _heightUnit = unit.name;
         break;
       case ValueType.weight:
-        final unitBeforeChange = WeightUnit.values[_weightIndex];
-        _weightIndex = _nextWeightIndex(WeightUnit.values.length);
-        final unit = WeightUnit.values[_weightIndex];
-        _weightValue = _bmiCalculators[unit.unitSystem().index]
+        final unitBeforeChange = WeightUnit.values[_weightUnit.index];
+        final weightIndex = _nextWeightIndex();
+        _weightUnit = WeightUnit.values[weightIndex];
+        _weightValue = _bmiCalculators[_weightUnit.unitSystem().index]
             .convertWeight(_weightValue, unitBeforeChange);
-        _weightUnit = unit.name;
         break;
     }
     emit(ChangedValueState(
-      heightUnit: _heightUnit,
-      weightUnit: _weightUnit,
+      heightUnit: _heightUnit.name,
+      weightUnit: _weightUnit.name,
       heightValue: _heightValue,
       weightValue: _weightValue,
     ));
@@ -77,8 +71,8 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
         break;
     }
     emit(ChangedValueState(
-      heightUnit: _heightUnit,
-      weightUnit: _weightUnit,
+      heightUnit: _heightUnit.name,
+      weightUnit: _weightUnit.name,
       heightValue: _heightValue,
       weightValue: _weightValue,
     ));
@@ -87,9 +81,9 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
   void calculateAndEmitBmi(event, emit) async {
     final newBmiValue = BmiCalculator.calculateBmi(
       _heightValue,
-      HeightUnit.values[_heightIndex],
+      HeightUnit.values[_heightUnit.index],
       _weightValue,
-      WeightUnit.values[_weightIndex],
+      WeightUnit.values[_weightUnit.index],
     );
     if (newBmiValue != _bmiValue && newBmiValue != -1) {
       _bmiValue = newBmiValue;
@@ -100,14 +94,12 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
     }
   }
 
-  int _nextHeightIndex(int numberOfValues) {
-    ++_heightIndex;
-    return _heightIndex % numberOfValues;
+  int _nextHeightIndex() {
+    return (_heightUnit.index + 1) % HeightUnit.values.length;
   }
 
-  int _nextWeightIndex(int numberOfValues) {
-    ++_weightIndex;
-    return _weightIndex % numberOfValues;
+  int _nextWeightIndex() {
+    return (_weightUnit.index + 1) % WeightUnit.values.length;
   }
 
   BmiLevel _getBmiLevel() {
