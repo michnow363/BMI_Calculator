@@ -1,8 +1,10 @@
-import 'package:bmi_calculator/blocs/bmi_bloc.dart';
-import 'package:bmi_calculator/blocs/bmi_event.dart';
-import 'package:bmi_calculator/blocs/bmi_state.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../blocs/bmi_bloc.dart';
+import '../blocs/bmi_event.dart';
+import '../blocs/bmi_state.dart';
 import '../enums.dart';
 
 class ValueRow extends StatefulWidget {

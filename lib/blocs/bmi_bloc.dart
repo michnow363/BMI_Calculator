@@ -1,10 +1,10 @@
-import 'package:bmi_calculator/blocs/bmi_state.dart';
-import 'package:bmi_calculator/consts.dart';
-import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:bmi_calculator/extensions.dart';
+
+import '../consts.dart';
 import '../enums.dart';
 import 'bmi_event.dart';
+import 'bmi_state.dart';
 
 class BmiBloc extends Bloc<BmiEvent, BmiState> {
   int _heightIndex;
@@ -30,8 +30,7 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
             heightValue: 0,
             weightValue: 0,
             bmiValue: 0,
-            color: BmiLevel.empty.color(),
-            bmiLevelLabel: BmiLevel.empty.label(),
+            bmiLevel: BmiLevel.empty,
           ),
         ) {
     on<ChangeUnitEvent>(changeAndEmitUnit);
@@ -104,8 +103,7 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
       _bmiValue = newBmiValue;
       emit(CalculatedBmiState(
         bmiValue: _bmiValue,
-        color: _getBmiColor(),
-        bmiLevelLabel: _getBmiLabel(),
+        bmiLevel: _getBmiLevel(),
       ));
     }
   }
@@ -151,51 +149,27 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
     return weight / height / height;
   }
 
-  String _getBmiLabel() {
-    final String bmiLevelLabel;
+  BmiLevel _getBmiLevel() {
+    final BmiLevel bmiLevel;
     if(_bmiValue <= 0) {
-      bmiLevelLabel = BmiLevel.empty.label();
+      bmiLevel = BmiLevel.empty;
     } else if (_bmiValue < 16) {
-      bmiLevelLabel = BmiLevel.starvation.label();
+      bmiLevel = BmiLevel.starvation;
     } else if (_bmiValue < 17) {
-      bmiLevelLabel = BmiLevel.emaciation.label();
+      bmiLevel = BmiLevel.emaciation;
     } else if (_bmiValue < 18.5) {
-      bmiLevelLabel = BmiLevel.underweight.label();
+      bmiLevel = BmiLevel.underweight;
     } else if (_bmiValue < 25) {
-      bmiLevelLabel = BmiLevel.correct.label();
+      bmiLevel = BmiLevel.correct;
     } else if (_bmiValue < 30) {
-      bmiLevelLabel = BmiLevel.overweight.label();
+      bmiLevel = BmiLevel.overweight;
     } else if (_bmiValue < 35) {
-      bmiLevelLabel = BmiLevel.obesityI.label();
+      bmiLevel = BmiLevel.obesityI;
     } else if (_bmiValue < 40) {
-      bmiLevelLabel = BmiLevel.obesityII.label();
+      bmiLevel = BmiLevel.obesityII;
     } else {
-      bmiLevelLabel = BmiLevel.obesityIII.label();
+      bmiLevel = BmiLevel.obesityIII;
     }
-    return bmiLevelLabel;
-  }
-
-  Color _getBmiColor() {
-    final Color color;
-    if(_bmiValue <= 0) {
-      color = BmiLevel.empty.color();
-    } else if (_bmiValue < 16) {
-      color = BmiLevel.starvation.color();
-    } else if (_bmiValue < 17) {
-      color = BmiLevel.emaciation.color();
-    } else if (_bmiValue < 18.5) {
-      color = BmiLevel.underweight.color();
-    } else if (_bmiValue < 25) {
-      color = BmiLevel.correct.color();
-    } else if (_bmiValue < 30) {
-      color = BmiLevel.overweight.color();
-    } else if (_bmiValue < 35) {
-      color = BmiLevel.obesityI.color();
-    } else if (_bmiValue < 40) {
-      color = BmiLevel.obesityII.color();
-    } else {
-      color = BmiLevel.obesityIII.color();
-    }
-    return color;
+    return bmiLevel;
   }
 }

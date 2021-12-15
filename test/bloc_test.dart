@@ -1,11 +1,12 @@
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:bmi_calculator/blocs/bmi_bloc.dart';
 import 'package:bmi_calculator/blocs/bmi_event.dart';
 import 'package:bmi_calculator/blocs/bmi_state.dart';
 import 'package:bmi_calculator/consts.dart';
 import 'package:bmi_calculator/enums.dart';
-import 'package:bmi_calculator/extensions.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 
 void main() {
   group('BmiBloc', () {
@@ -83,8 +84,7 @@ void main() {
       expect: () => [
         CalculatedBmiState(
           bmiValue: 17.5,
-          color: BmiLevel.underweight.color(),
-          bmiLevelLabel: BmiLevel.underweight.label(),
+          bmiLevel: BmiLevel.underweight,
         ),ChangedValueState(
           heightUnit: HeightUnit.m.name,
           weightUnit: WeightUnit.lb.name,

@@ -1,5 +1,7 @@
-import 'package:bmi_calculator/enums.dart';
+
 import 'package:equatable/equatable.dart';
+
+import '../enums.dart';
 
 abstract class BmiEvent extends Equatable {
   const BmiEvent();

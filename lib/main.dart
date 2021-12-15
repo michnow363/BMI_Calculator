@@ -1,14 +1,16 @@
-import 'package:bmi_calculator/blocs/bmi_bloc.dart';
-import 'package:bmi_calculator/blocs/bmi_event.dart';
-import 'package:bmi_calculator/extensions.dart';
-import 'package:bmi_calculator/widgets/bmi_slider.dart';
-import 'package:bmi_calculator/widgets/start_button.dart';
-import 'package:bmi_calculator/widgets/value_row.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'blocs/bmi_bloc.dart';
+import 'blocs/bmi_event.dart';
 import 'blocs/bmi_state.dart';
 import 'enums.dart';
+import 'extensions.dart';
+import 'widgets/bmi_slider.dart';
+import 'widgets/start_button.dart';
+import 'widgets/value_row.dart';
 
 void main() {
   BlocOverrides.runZoned(
@@ -92,8 +94,8 @@ class _HomePageState extends State<HomePage> {
                         bmiValue: getBmiValue(state),
                         min: 0,
                         max: 60,
-                        color: getBmiColor(state),
-                        bmiLabel: getBmiLevelLabel(state),
+                        color: getBmiLevel(state).color(),
+                        bmiLabel: getBmiLevel(state).label(),
                       ),
                     ),
                   );
@@ -139,26 +141,15 @@ class _HomePageState extends State<HomePage> {
     return bmiValue;
   }
 
-  String getBmiLevelLabel(BmiState state) {
-    String levelLabel = '';
+  BmiLevel getBmiLevel(BmiState state) {
+    BmiLevel levelLabel = BmiLevel.empty;
     if (state is InitialState) {
-      levelLabel = state.bmiLevelLabel;
+      levelLabel = state.bmiLevel;
     }
     if (state is CalculatedBmiState) {
-      levelLabel = state.bmiLevelLabel;
+      levelLabel = state.bmiLevel;
     }
     return levelLabel;
-  }
-
-  Color getBmiColor(BmiState state) {
-    Color color = BmiLevel.empty.color();
-    if (state is InitialState) {
-      color = state.color;
-    }
-    if (state is CalculatedBmiState) {
-      color = state.color;
-    }
-    return color;
   }
 
   @override
