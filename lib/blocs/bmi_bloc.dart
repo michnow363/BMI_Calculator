@@ -89,7 +89,7 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
       _bmiValue = newBmiValue;
       emit(CalculatedBmiState(
         bmiValue: _bmiValue,
-        bmiLevel: _getBmiLevel(),
+        bmiLevel: BmiCalculator.getBmiLevel(_bmiValue),
       ));
     }
   }
@@ -100,29 +100,5 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
 
   int _nextWeightIndex() {
     return (_weightUnit.index + 1) % WeightUnit.values.length;
-  }
-
-  BmiLevel _getBmiLevel() {
-    final BmiLevel bmiLevel;
-    if (_bmiValue <= 0) {
-      bmiLevel = BmiLevel.empty;
-    } else if (_bmiValue < 16) {
-      bmiLevel = BmiLevel.starvation;
-    } else if (_bmiValue < 17) {
-      bmiLevel = BmiLevel.emaciation;
-    } else if (_bmiValue < 18.5) {
-      bmiLevel = BmiLevel.underweight;
-    } else if (_bmiValue < 25) {
-      bmiLevel = BmiLevel.correct;
-    } else if (_bmiValue < 30) {
-      bmiLevel = BmiLevel.overweight;
-    } else if (_bmiValue < 35) {
-      bmiLevel = BmiLevel.obesityI;
-    } else if (_bmiValue < 40) {
-      bmiLevel = BmiLevel.obesityII;
-    } else {
-      bmiLevel = BmiLevel.obesityIII;
-    }
-    return bmiLevel;
   }
 }

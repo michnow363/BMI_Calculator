@@ -13,6 +13,30 @@ abstract class BmiCalculator {
     return weightValueInMetric / heightValueInMetric / heightValueInMetric;
   }
 
+  static BmiLevel getBmiLevel(double bmiValue) {
+    final BmiLevel bmiLevel;
+    if (bmiValue <= 0) {
+      bmiLevel = BmiLevel.empty;
+    } else if (bmiValue < 16) {
+      bmiLevel = BmiLevel.starvation;
+    } else if (bmiValue < 17) {
+      bmiLevel = BmiLevel.emaciation;
+    } else if (bmiValue < 18.5) {
+      bmiLevel = BmiLevel.underweight;
+    } else if (bmiValue < 25) {
+      bmiLevel = BmiLevel.correct;
+    } else if (bmiValue < 30) {
+      bmiLevel = BmiLevel.overweight;
+    } else if (bmiValue < 35) {
+      bmiLevel = BmiLevel.obesityI;
+    } else if (bmiValue < 40) {
+      bmiLevel = BmiLevel.obesityII;
+    } else {
+      bmiLevel = BmiLevel.obesityIII;
+    }
+    return bmiLevel;
+  }
+
   double convertHeight(double value, HeightUnit previousUnit);
   double convertWeight(double value, WeightUnit previousUnit);
 }
