@@ -20,13 +20,13 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
         _weightIndex = 0,
         _heightValue = 0.0,
         _weightValue = 0.0,
-        _heightUnit = HeightUnit.values[0].name(),
-        _weightUnit = WeightUnit.values[0].name(),
+        _heightUnit = HeightUnit.values[0].name,
+        _weightUnit = WeightUnit.values[0].name,
         _bmiValue = 0,
         super(
           InitialState(
-            heightUnit: HeightUnit.values[0].name(),
-            weightUnit: WeightUnit.values[0].name(),
+            heightUnit: HeightUnit.values[0].name,
+            weightUnit: WeightUnit.values[0].name,
             heightValue: 0,
             weightValue: 0,
             bmiValue: 0,
@@ -34,78 +34,80 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
             bmiLevelLabel: BmiLevel.empty.label(),
           ),
         ) {
-    on<ChangeUnitEvent>(
-      (event, emit) {
-        switch (event.valueType) {
-          case ValueType.height:
-            final unitBeforeChange = HeightUnit.values[_heightIndex];
-            switch (unitBeforeChange) {
-              case HeightUnit.m:
-                _heightValue = _convertToFeet(_heightValue);
-                break;
-              case HeightUnit.feet:
-                _heightValue = _convertToM(_heightValue);
-                break;
-            }
-            _heightIndex = _nextHeightIndex(HeightUnit.values.length);
-            final unit = HeightUnit.values[_heightIndex];
-            _heightUnit = unit.name();
+    on<ChangeUnitEvent>(changeAndEmitUnit);
+    on<ChangeValueEvent>(changeAndEmitValue);
+    on<CalculateBmiEvent>(calculateAndEmitBmi);
+  }
+
+  void changeAndEmitUnit(event, emit) {
+    switch (event.valueType) {
+      case ValueType.height:
+        final unitBeforeChange = HeightUnit.values[_heightIndex];
+        switch (unitBeforeChange) {
+          case HeightUnit.m:
+            _heightValue = _convertToFeet(_heightValue);
             break;
-          case ValueType.weight:
-            final unitBeforeChange = WeightUnit.values[_weightIndex];
-            switch (unitBeforeChange) {
-              case WeightUnit.kg:
-                _weightValue = _convertToLb(_weightValue);
-                break;
-              case WeightUnit.lb:
-                _weightValue = _convertToKg(_weightValue);
-                break;
-            }
-            _weightIndex = _nextWeightIndex(WeightUnit.values.length);
-            final unit = WeightUnit.values[_weightIndex];
-            _weightUnit = unit.name();
+          case HeightUnit.feet:
+            _heightValue = _convertToM(_heightValue);
             break;
         }
-        emit(ChangedValueState(
-          heightUnit: _heightUnit,
-          weightUnit: _weightUnit,
-          heightValue: _heightValue,
-          weightValue: _weightValue,
-        ));
-      },
-    );
-    on<ChangeValueEvent>(
-      (event, emit) {
-        switch (event.valueType) {
-          case ValueType.height:
-            _heightValue = event.newValue;
+        _heightIndex = _nextHeightIndex(HeightUnit.values.length);
+        final unit = HeightUnit.values[_heightIndex];
+        _heightUnit = unit.name;
+        break;
+      case ValueType.weight:
+        final unitBeforeChange = WeightUnit.values[_weightIndex];
+        switch (unitBeforeChange) {
+          case WeightUnit.kg:
+            _weightValue = _convertToLb(_weightValue);
             break;
-          case ValueType.weight:
-            _weightValue = event.newValue;
+          case WeightUnit.lb:
+            _weightValue = _convertToKg(_weightValue);
             break;
         }
-        emit(ChangedValueState(
-          heightUnit: _heightUnit,
-          weightUnit: _weightUnit,
-          heightValue: _heightValue,
-          weightValue: _weightValue,
-        ));
-      },
-    );
-    on<CalculateBmiEvent>((event, emit) {
-      final double heightValueInMetric = _convertToM(_heightValue);
-      final double weightValueInMetric = _convertToKg(_weightValue);
-      final newBmiValue =
-          _calculateBmi(heightValueInMetric, weightValueInMetric);
-      if (newBmiValue != _bmiValue && newBmiValue != -1) {
-        _bmiValue = newBmiValue;
-        emit(CalculatedBmiState(
-          bmiValue: _bmiValue,
-          color: _getBmiColor(),
-          bmiLevelLabel: _getBmiLabel(),
-        ));
-      }
-    });
+        _weightIndex = _nextWeightIndex(WeightUnit.values.length);
+        final unit = WeightUnit.values[_weightIndex];
+        _weightUnit = unit.name;
+        break;
+    }
+    emit(ChangedValueState(
+      heightUnit: _heightUnit,
+      weightUnit: _weightUnit,
+      heightValue: _heightValue,
+      weightValue: _weightValue,
+    ));
+  }
+
+  void changeAndEmitValue(event, emit) async {
+    switch (event.valueType) {
+      case ValueType.height:
+        _heightValue = event.newValue;
+        break;
+      case ValueType.weight:
+        _weightValue = event.newValue;
+        break;
+    }
+    emit(ChangedValueState(
+      heightUnit: _heightUnit,
+      weightUnit: _weightUnit,
+      heightValue: _heightValue,
+      weightValue: _weightValue,
+    ));
+  }
+
+  void calculateAndEmitBmi(event, emit) async {
+    final double heightValueInMetric = _convertToM(_heightValue);
+    final double weightValueInMetric = _convertToKg(_weightValue);
+    final newBmiValue =
+    _calculateBmi(heightValueInMetric, weightValueInMetric);
+    if (newBmiValue != _bmiValue && newBmiValue != -1) {
+      _bmiValue = newBmiValue;
+      emit(CalculatedBmiState(
+        bmiValue: _bmiValue,
+        color: _getBmiColor(),
+        bmiLevelLabel: _getBmiLabel(),
+      ));
+    }
   }
 
   int _nextHeightIndex(int numberOfValues) {

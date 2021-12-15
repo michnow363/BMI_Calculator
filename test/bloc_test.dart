@@ -23,14 +23,14 @@ void main() {
         ..add(ChangeValueEvent(ValueType.weight, 65.5)),
       expect: () => [
         ChangedValueState(
-          heightUnit: HeightUnit.m.name(),
-          weightUnit: WeightUnit.kg.name(),
+          heightUnit: HeightUnit.m.name,
+          weightUnit: WeightUnit.kg.name,
           heightValue: 1.69,
           weightValue: 0,
         ),
         ChangedValueState(
-          heightUnit: HeightUnit.m.name(),
-          weightUnit: WeightUnit.kg.name(),
+          heightUnit: HeightUnit.m.name,
+          weightUnit: WeightUnit.kg.name,
           heightValue: 1.69,
           weightValue: 65.5,
         )
@@ -49,20 +49,20 @@ void main() {
       skip: 2,
       expect: () => [
         ChangedValueState(
-          heightUnit: HeightUnit.m.name(),
-          weightUnit: WeightUnit.lb.name(),
+          heightUnit: HeightUnit.m.name,
+          weightUnit: WeightUnit.lb.name,
           heightValue: 1.69,
           weightValue: 67.59 * Consts.lbInKg,
         ),
         ChangedValueState(
-          heightUnit: HeightUnit.feet.name(),
-          weightUnit: WeightUnit.lb.name(),
+          heightUnit: HeightUnit.feet.name,
+          weightUnit: WeightUnit.lb.name,
           heightValue: 1.69 * Consts.feetInMeter,
           weightValue: 67.59 * Consts.lbInKg,
         ),
         ChangedValueState(
-          heightUnit: HeightUnit.m.name(),
-          weightUnit: WeightUnit.lb.name(),
+          heightUnit: HeightUnit.m.name,
+          weightUnit: WeightUnit.lb.name,
           heightValue: 1.69,
           weightValue: 67.59 * Consts.lbInKg,
         ),
@@ -86,14 +86,14 @@ void main() {
           color: BmiLevel.underweight.color(),
           bmiLevelLabel: BmiLevel.underweight.label(),
         ),ChangedValueState(
-          heightUnit: HeightUnit.m.name(),
-          weightUnit: WeightUnit.lb.name(),
+          heightUnit: HeightUnit.m.name,
+          weightUnit: WeightUnit.lb.name,
           heightValue: 2,
           weightValue: 70 * Consts.lbInKg,
         ),
         ChangedValueState(
-          heightUnit: HeightUnit.feet.name(),
-          weightUnit: WeightUnit.lb.name(),
+          heightUnit: HeightUnit.feet.name,
+          weightUnit: WeightUnit.lb.name,
           heightValue: 2 * Consts.feetInMeter,
           weightValue: 70 * Consts.lbInKg,
         ),
