@@ -20,7 +20,7 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
         _heightValue = 0.0,
         _weightValue = 0.0,
         _bmiValue = 0,
-        _bmiCalculators = [MetricCalculator(), ImperialCalculator()],
+        _bmiCalculators = [MetricCalculator(), ImperialCalculator(), OldPolishCalculator()],
         super(
           InitialState(
             heightUnit: HeightUnit.values[0].name,

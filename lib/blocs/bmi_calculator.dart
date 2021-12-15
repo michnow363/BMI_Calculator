@@ -23,8 +23,10 @@ class MetricCalculator extends BmiCalculator {
     switch (previousUnit) {
       case HeightUnit.m:
         return value;
-      case HeightUnit.feet:
+      case HeightUnit.foot:
         return value / Consts.feetInMeter;
+      case HeightUnit.lokiec:
+        return value * Consts.metersInLokiec;
     }
   }
 
@@ -35,6 +37,8 @@ class MetricCalculator extends BmiCalculator {
         return value;
       case WeightUnit.lb:
         return value / Consts.lbInKg;
+      case WeightUnit.funt:
+        return value * Consts.kgInFunt;
     }
   }
 }
@@ -45,8 +49,10 @@ class ImperialCalculator extends BmiCalculator {
     switch(previousUnit) {
       case HeightUnit.m:
         return value * Consts.feetInMeter;
-      case HeightUnit.feet:
+      case HeightUnit.foot:
         return value;
+      case HeightUnit.lokiec:
+        return value * Consts.feetInLokiec;
     }
   }
 
@@ -56,6 +62,34 @@ class ImperialCalculator extends BmiCalculator {
       case WeightUnit.kg:
         return value * Consts.lbInKg;
       case WeightUnit.lb:
+        return value;
+      case WeightUnit.funt:
+        return value * Consts.lbInFunt;
+    }
+  }
+}
+
+class OldPolishCalculator extends BmiCalculator {
+  @override
+  double convertHeight(double value, HeightUnit previousUnit) {
+    switch(previousUnit) {
+      case HeightUnit.m:
+        return value / Consts.metersInLokiec;
+      case HeightUnit.foot:
+        return value / Consts.feetInLokiec;
+      case HeightUnit.lokiec:
+        return value;
+    }
+  }
+
+  @override
+  double convertWeight(double value, WeightUnit previousUnit) {
+    switch(previousUnit) {
+      case WeightUnit.kg:
+        return value / Consts.kgInFunt;
+      case WeightUnit.lb:
+        return value / Consts.lbInFunt;
+      case WeightUnit.funt:
         return value;
     }
   }

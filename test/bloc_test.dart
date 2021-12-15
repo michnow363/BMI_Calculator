@@ -45,6 +45,9 @@ void main() {
         ..add(ChangeValueEvent(ValueType.height, 1.69))
         ..add(ChangeValueEvent(ValueType.weight, 67.59))
         ..add(ChangeUnitEvent(ValueType.weight))
+        ..add(ChangeUnitEvent(ValueType.weight))
+        ..add(ChangeUnitEvent(ValueType.weight))
+        ..add(ChangeUnitEvent(ValueType.height))
         ..add(ChangeUnitEvent(ValueType.height))
         ..add(ChangeUnitEvent(ValueType.height)),
       skip: 2,
@@ -56,16 +59,34 @@ void main() {
           weightValue: 67.59 * Consts.lbInKg,
         ),
         ChangedValueState(
-          heightUnit: HeightUnit.feet.name,
-          weightUnit: WeightUnit.lb.name,
-          heightValue: 1.69 * Consts.feetInMeter,
-          weightValue: 67.59 * Consts.lbInKg,
+          heightUnit: HeightUnit.m.name,
+          weightUnit: WeightUnit.funt.name,
+          heightValue: 1.69,
+          weightValue: 67.59 / Consts.kgInFunt,
         ),
         ChangedValueState(
           heightUnit: HeightUnit.m.name,
-          weightUnit: WeightUnit.lb.name,
+          weightUnit: WeightUnit.kg.name,
           heightValue: 1.69,
-          weightValue: 67.59 * Consts.lbInKg,
+          weightValue: 67.59,
+        ),
+        ChangedValueState(
+          heightUnit: HeightUnit.foot.name,
+          weightUnit: WeightUnit.kg.name,
+          heightValue: 1.69 * Consts.feetInMeter,
+          weightValue: 67.59,
+        ),
+        ChangedValueState(
+          heightUnit: HeightUnit.lokiec.name,
+          weightUnit: WeightUnit.kg.name,
+          heightValue: 1.69 / Consts.metersInLokiec,
+          weightValue: 67.59,
+        ),
+        ChangedValueState(
+          heightUnit: HeightUnit.m.name,
+          weightUnit: WeightUnit.kg.name,
+          heightValue: 1.69,
+          weightValue: 67.59,
         ),
       ],
     );
@@ -92,7 +113,7 @@ void main() {
           weightValue: 70 * Consts.lbInKg,
         ),
         ChangedValueState(
-          heightUnit: HeightUnit.feet.name,
+          heightUnit: HeightUnit.foot.name,
           weightUnit: WeightUnit.lb.name,
           heightValue: 2 * Consts.feetInMeter,
           weightValue: 70 * Consts.lbInKg,

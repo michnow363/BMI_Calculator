@@ -7,16 +7,19 @@ enum ValueType {
 enum UnitSystem {
   metric,
   imperial,
+  oldPolish,
 }
 
 enum HeightUnit {
   m,
-  feet
+  foot,
+  lokiec,
 }
 
 enum WeightUnit {
   kg,
   lb,
+  funt,
 }
 
 enum BmiLevel {

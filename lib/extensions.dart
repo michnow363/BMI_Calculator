@@ -8,8 +8,10 @@ extension HeightUnitExtension on HeightUnit {
     switch(this) {
       case HeightUnit.m:
         return UnitSystem.metric;
-      case HeightUnit.feet:
+      case HeightUnit.foot:
         return UnitSystem.imperial;
+      case HeightUnit.lokiec:
+        return UnitSystem.oldPolish;
     }
   }
 }
@@ -21,6 +23,8 @@ extension WeightUnitExtension on WeightUnit {
         return UnitSystem.metric;
       case WeightUnit.lb:
         return UnitSystem.imperial;
+      case WeightUnit.funt:
+        return UnitSystem.oldPolish;
     }
   }
 }
