@@ -4,6 +4,11 @@ enum ValueType {
   weight,
 }
 
+enum UnitSystem {
+  metric,
+  imperial,
+}
+
 enum HeightUnit {
   m,
   feet
