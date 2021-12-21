@@ -1,4 +1,5 @@
-
+import 'package:bmi_calculator/blocs/bmi_calculator.dart';
+import 'package:bmi_calculator/blocs/bmi_converter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,7 +45,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _bmiBloc = BmiBloc();
+  final _bmiBloc = BmiBloc(
+    BmiCalculator(),
+    [
+      MetricConverter(),
+      ImperialConverter(),
+      OldPolishConverter(),
+    ],
+  );
 
   @override
   Widget build(BuildContext context) {

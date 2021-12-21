@@ -1,24 +1,38 @@
-
 import 'package:bloc_test/bloc_test.dart';
 import 'package:bmi_calculator/blocs/bmi_bloc.dart';
+import 'package:bmi_calculator/blocs/bmi_converter.dart';
 import 'package:bmi_calculator/blocs/bmi_event.dart';
 import 'package:bmi_calculator/blocs/bmi_state.dart';
-import 'package:bmi_calculator/consts.dart';
 import 'package:bmi_calculator/enums.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'bmi_mocks.dart';
 
 void main() {
   group('BmiBloc', () {
     blocTest(
       'emits [] when nothing is added',
-      build: () => BmiBloc(),
+      build: () => BmiBloc(
+        MockBmiCalculator(),
+        <BmiConverter>[
+          MockMetricConverter(),
+          MockImperialConverter(),
+          MockOldPolishConverter(),
+        ],
+      ),
       expect: () => [],
     );
 
     blocTest(
       'ChangeValueEvent tests',
-      build: () => BmiBloc(),
+      build: () => BmiBloc(
+        MockBmiCalculator(),
+        <BmiConverter>[
+          MockMetricConverter(),
+          MockImperialConverter(),
+          MockOldPolishConverter(),
+        ],
+      ),
       act: (bloc) => (bloc as BmiBloc)
         ..add(ChangeValueEvent(ValueType.height, 1.69))
         ..add(ChangeValueEvent(ValueType.weight, 65.5)),
@@ -40,7 +54,14 @@ void main() {
 
     blocTest(
       'ChangeUnitEvent tests',
-      build: () => BmiBloc(),
+      build: () => BmiBloc(
+        MockBmiCalculator(),
+        <BmiConverter>[
+          MockMetricConverter(),
+          MockImperialConverter(),
+          MockOldPolishConverter(),
+        ],
+      ),
       act: (bloc) => (bloc as BmiBloc)
         ..add(ChangeValueEvent(ValueType.height, 1.69))
         ..add(ChangeValueEvent(ValueType.weight, 67.59))
@@ -56,44 +77,51 @@ void main() {
           heightUnit: HeightUnit.m.name,
           weightUnit: WeightUnit.lb.name,
           heightValue: 1.69,
-          weightValue: 67.59 * Consts.lbInKg,
+          weightValue: 2,
         ),
         ChangedValueState(
           heightUnit: HeightUnit.m.name,
           weightUnit: WeightUnit.funt.name,
           heightValue: 1.69,
-          weightValue: 67.59 / Consts.kgInFunt,
+          weightValue: 3,
         ),
         ChangedValueState(
           heightUnit: HeightUnit.m.name,
           weightUnit: WeightUnit.kg.name,
           heightValue: 1.69,
-          weightValue: 67.59,
+          weightValue: 1,
         ),
         ChangedValueState(
           heightUnit: HeightUnit.foot.name,
           weightUnit: WeightUnit.kg.name,
-          heightValue: 1.69 * Consts.feetInMeter,
-          weightValue: 67.59,
+          heightValue: 2,
+          weightValue: 1,
         ),
         ChangedValueState(
           heightUnit: HeightUnit.lokiec.name,
           weightUnit: WeightUnit.kg.name,
-          heightValue: 1.69 / Consts.metersInLokiec,
-          weightValue: 67.59,
+          heightValue: 3,
+          weightValue: 1,
         ),
         ChangedValueState(
           heightUnit: HeightUnit.m.name,
           weightUnit: WeightUnit.kg.name,
-          heightValue: 1.69,
-          weightValue: 67.59,
+          heightValue: 1,
+          weightValue: 1,
         ),
       ],
     );
 
     blocTest(
       'CalculatedBmiEvent tested',
-      build: () => BmiBloc(),
+      build: () => BmiBloc(
+        MockBmiCalculator(),
+        <BmiConverter>[
+          MockMetricConverter(),
+          MockImperialConverter(),
+          MockOldPolishConverter(),
+        ],
+      ),
       act: (bloc) => (bloc as BmiBloc)
         ..add(ChangeValueEvent(ValueType.height, 2))
         ..add(ChangeValueEvent(ValueType.weight, 70))
@@ -104,19 +132,20 @@ void main() {
       skip: 2,
       expect: () => [
         CalculatedBmiState(
-          bmiValue: 17.5,
-          bmiLevel: BmiLevel.underweight,
-        ),ChangedValueState(
+          bmiValue: 20,
+          bmiLevel: BmiLevel.correct,
+        ),
+        ChangedValueState(
           heightUnit: HeightUnit.m.name,
           weightUnit: WeightUnit.lb.name,
           heightValue: 2,
-          weightValue: 70 * Consts.lbInKg,
+          weightValue: 2,
         ),
         ChangedValueState(
           heightUnit: HeightUnit.foot.name,
           weightUnit: WeightUnit.lb.name,
-          heightValue: 2 * Consts.feetInMeter,
-          weightValue: 70 * Consts.lbInKg,
+          heightValue: 2,
+          weightValue: 2,
         ),
         // CalculatedBmiState not emitted, because value is the same
       ],
