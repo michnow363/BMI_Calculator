@@ -34,13 +34,20 @@ class ValueRowState extends State<ValueRow> {
   final ValueType _valueType;
   final String _textBoxTitle;
   final String _buttonTooltip;
-  bool _valueEmpty;
+  final TextEditingController textController;
 
   ValueRowState(
     this._textBoxTitle,
     this._buttonTooltip,
     this._valueType,
-  )   : _valueEmpty = true;
+  )   :
+    this.textController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    textController.addListener(textValueChanged);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +60,7 @@ class ValueRowState extends State<ValueRow> {
           BlocBuilder<BmiBloc, BmiState>(
             buildWhen: (previousState, state) {
               final needRebuilding = widgetNeedRebuilding(previousState, state);
+              getValue(state);
               return needRebuilding;
             },
             builder: (context, state) {
@@ -66,24 +74,13 @@ class ValueRowState extends State<ValueRow> {
                         padding: EdgeInsets.only(right: 20),
                         child: TextFormField(
                           key: UniqueKey(),
-                          initialValue: getValue(state),
-                          onFieldSubmitted: (value) {
-                            if (value.isNotEmpty) {
-                              final valueDb = double.parse(value);
-                              _valueEmpty = valueDb > 0 ? false : true;
-                              BlocProvider.of<BmiBloc>(context)
-                                  .add(ChangeValueEvent(_valueType, valueDb));
-                              value = valueDb.toStringAsFixed(2);
-                            } else {
-                              _valueEmpty = true;
-                            }
-                          },
+                          controller: textController,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             border: UnderlineInputBorder(),
-                            labelText: _valueEmpty ? _textBoxTitle : '',
+                            labelText: _textBoxTitle,
                             labelStyle: TextStyle(
-                              color: Colors.red,
+                              color: Colors.grey,
                             ),
                           ),
                         ),
@@ -120,6 +117,12 @@ class ValueRowState extends State<ValueRow> {
     );
   }
 
+  @override
+  void dispose() {
+    textController.dispose();
+    super.dispose();
+  }
+
   bool widgetNeedRebuilding(BmiState previousState, BmiState state) {
     if (state is ChangedValueState) {
       return true;
@@ -141,18 +144,26 @@ class ValueRowState extends State<ValueRow> {
     }
     return unit;
   }
-  String getValue(BmiState state) {
+  void getValue(BmiState state) {
     double value = 0;
     if (state is InitialState) {
       value = _valueType == ValueType.height
           ? state.heightValue
           : state.weightValue;
+      textController.text = value.toString();
     }
     if (state is ChangedValueState) {
       value = _valueType == ValueType.height
           ? state.heightValue
           : state.weightValue;
+      textController.text = value.toString();
     }
-    return value > 0 ? '${value.toStringAsFixed(2)}' : '';
+  }
+  void textValueChanged() {
+    var text = textController.text;
+    if (text.isNotEmpty) {
+      final valueDb = double.parse(text);
+      BlocProvider.of<BmiBloc>(context).add(ChangeValueEvent(_valueType, valueDb));
+    }
   }
 }

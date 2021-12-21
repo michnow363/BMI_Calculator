@@ -36,7 +36,7 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
     _bmiConverters = bmiConverters;
     _bmiCalculator = bmiCalculator;
     on<ChangeUnitEvent>(changeAndEmitUnit);
-    on<ChangeValueEvent>(changeAndEmitValue);
+    on<ChangeValueEvent>(changeValue);
     on<CalculateBmiEvent>(calculateAndEmitBmi);
   }
 
@@ -65,7 +65,7 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
     ));
   }
 
-  void changeAndEmitValue(event, emit) async {
+  void changeValue(event, emit) async {
     switch (event.valueType) {
       case ValueType.height:
         _heightValue = event.newValue;
@@ -74,12 +74,6 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
         _weightValue = event.newValue;
         break;
     }
-    emit(ChangedValueState(
-      heightUnit: _heightUnit.name,
-      weightUnit: _weightUnit.name,
-      heightValue: _heightValue,
-      weightValue: _weightValue,
-    ));
   }
 
   void calculateAndEmitBmi(event, emit) async {

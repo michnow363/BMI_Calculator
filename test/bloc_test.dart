@@ -36,20 +36,7 @@ void main() {
       act: (bloc) => (bloc as BmiBloc)
         ..add(ChangeValueEvent(ValueType.height, 1.69))
         ..add(ChangeValueEvent(ValueType.weight, 65.5)),
-      expect: () => [
-        ChangedValueState(
-          heightUnit: HeightUnit.m.name,
-          weightUnit: WeightUnit.kg.name,
-          heightValue: 1.69,
-          weightValue: 0,
-        ),
-        ChangedValueState(
-          heightUnit: HeightUnit.m.name,
-          weightUnit: WeightUnit.kg.name,
-          heightValue: 1.69,
-          weightValue: 65.5,
-        )
-      ],
+      expect: () => [],
     );
 
     blocTest(
@@ -71,7 +58,6 @@ void main() {
         ..add(ChangeUnitEvent(ValueType.height))
         ..add(ChangeUnitEvent(ValueType.height))
         ..add(ChangeUnitEvent(ValueType.height)),
-      skip: 2,
       expect: () => [
         ChangedValueState(
           heightUnit: HeightUnit.m.name,
@@ -129,7 +115,6 @@ void main() {
         ..add(ChangeUnitEvent(ValueType.weight))
         ..add(ChangeUnitEvent(ValueType.height))
         ..add(CalculateBmiEvent()),
-      skip: 2,
       expect: () => [
         CalculatedBmiState(
           bmiValue: 20,
